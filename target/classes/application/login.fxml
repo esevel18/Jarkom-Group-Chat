@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="CENTER" prefHeight="400.0" prefWidth="400.0" spacing="20.0" style="-fx-background-color: #313338;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
+   <children>
+      <Label style="-fx-text-fill: white; -fx-font-weight: bold;" text="Selamat Datang di WhutsAppBro">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Label>
+      <TextField fx:id="userNameInput" maxWidth="250.0" promptText="Masukkan Username Anda" style="-fx-background-color: #1e1f22; -fx-text-fill: white; -fx-padding: 10;" />
+      <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLogin" prefWidth="250.0" style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10;" text="Masuk" />
+      <Label fx:id="errorLabel" style="-fx-text-fill: #ed4245;" text="" />
+   </children>
+</VBox>
