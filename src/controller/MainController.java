@@ -171,7 +171,8 @@ public class MainController implements ChatListener {
         try {
             FileTransferClient transferClient = new FileTransferClient(serverIp);
             // We pass the file to the general upload mechanism
-            transferClient.uploadFile(selectedFile, "file"); // Ensure your FileTransferClient has a generic upload or use
+            transferClient.uploadFile(selectedFile, "file");
+
             // Send the file announcement over the chat control port
             chatClient.sendFile(selectedFile.getName());
 
