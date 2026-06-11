@@ -1,8 +1,13 @@
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\application\Main.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\client\ChatClient.java
+C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\client\ChatHistoryLogger.java
+C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\client\FileTransferClient.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\controller\ChatListener.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\controller\LoginController.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\controller\MainController.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\ChatServer.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\ClientHandler.java
+C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\FileTransferHandler.java
+C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\FileTransferServer.java
+C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\NetworkConfig.java
 C:\Niel\IF Semester 4\Jarkom\Tubes\Jarkom-Group-Chat\src\server\Room.java

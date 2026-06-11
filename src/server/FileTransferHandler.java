@@ -15,68 +15,55 @@ public class FileTransferHandler implements Runnable {
     @Override
     public void run() {
 
-        try (
-            DataInputStream in =
-                new DataInputStream(socket.getInputStream())
-        ) {
+        try {
+            DataInputStream dInputStream = new DataInputStream(socket.getInputStream());
+            DataOutputStream dOutputStream = new DataOutputStream(socket.getOutputStream());
 
-            System.out.println(
-                "File transfer connection from: "
-                + socket.getInetAddress()
-            );
+            System.out.println("File transfer connection from: " + socket.getInetAddress());
 
             // Read metadata
-            String fileType = in.readUTF();
-            String fileName = in.readUTF();
-            long fileSize = in.readLong();
+            String action = dInputStream.readUTF();
+            String fileType = dInputStream.readUTF();
+            String fileName = dInputStream.readUTF();
 
-            System.out.println(
-                "Receiving " + fileName +
-                " (" + fileSize + " bytes)"
-            );
+            if (action.equalsIgnoreCase("UPLOAD")) {
+                long fileSize = dInputStream.readLong();
 
-            // Create upload directory
-            Path uploadDir =
-                Paths.get("uploads", fileType);
-
-            Files.createDirectories(uploadDir);
-
-            // Target file
-            Path targetFile =
-                uploadDir.resolve(fileName);
-
-            // Save file
-            try (
-                OutputStream fileOut =
-                    Files.newOutputStream(targetFile)
-            ) {
-
-                byte[] buffer = new byte[8192];
-                long remaining = fileSize;
-
-                while (remaining > 0) {
-
-                    int read = in.read(
-                        buffer,
-                        0,
-                        (int) Math.min(
-                            buffer.length,
-                            remaining
-                        )
-                    );
-
-                    if (read == -1) {
-                        break;
+                // Create upload directory
+                File dir = new File("uploads/", fileType);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                File targetFile = new File(dir, fileName);
+                try (FileOutputStream fOutputStream = new FileOutputStream(targetFile)) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    long totalRead = 0;
+                    while (totalRead < fileSize && (bytesRead = dInputStream.read(buffer)) != -1) {
+                        fOutputStream.write(buffer, 0, bytesRead);
+                        totalRead += bytesRead;
+                    }
+                }
+            } else if (action.equalsIgnoreCase("DOWNLOAD")) {
+                File targetFile = new File("uploads/" + fileType + "/" + fileName);
+                if (targetFile.exists()) {
+                    dOutputStream.writeBoolean(true);
+                    dOutputStream.writeLong(targetFile.length());
+                    try (FileInputStream fInputStream = new FileInputStream(targetFile)) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = fInputStream.read(buffer)) != -1) {
+                            dOutputStream.write(buffer, 0, bytesRead);
+                        }
+                        dOutputStream.flush();
                     }
 
-                    fileOut.write(buffer, 0, read);
-                    remaining -= read;
+                } else {
+                    dOutputStream.writeBoolean(false);
                 }
+            } else {
+                System.out.println("Unkown action: " + action);
             }
-
-            System.out.println(
-                "Saved file: " + targetFile
-            );
 
         } catch (Exception e) {
             e.printStackTrace();

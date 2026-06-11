@@ -13,8 +13,8 @@ public class FileTransferServer implements Runnable {
 
     @Override
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("File Transfer Server running on port " + port);
+        try (ServerSocket serverSocket = new ServerSocket(PORT)) {
+            System.out.println("File Transfer Server running on port " + PORT);
 
             while (true) {
                 Socket socket = serverSocket.accept();

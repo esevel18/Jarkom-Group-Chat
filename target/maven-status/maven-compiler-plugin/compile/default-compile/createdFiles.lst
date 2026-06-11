@@ -1,8 +1,8 @@
+client\ChatClient.class
+controller\MainController.class
 application\Main.class
 controller\LoginController.class
 server\ChatServer.class
 server\ClientHandler.class
 server\Room.class
-client\ChatClient.class
 controller\ChatListener.class
-controller\MainController.class

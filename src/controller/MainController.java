@@ -13,8 +13,16 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import java.io.File;
 
+// Render Image & Video
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.media.MediaView;
+
 import client.ChatClient;
 import client.ChatHistoryLogger;
+import client.FileTransferClient;
 
 public class MainController implements ChatListener {
 
@@ -38,6 +46,8 @@ public class MainController implements ChatListener {
     private ChatClient chatClient;
     private String userName;
     private String currentRoom = "";
+    // IP komputer for LAN test
+    private final String SERVER_IP = "localhost";
 
     // Set client saat login dilakuakan
     public void setClient(ChatClient client, String userName) {
@@ -69,18 +79,74 @@ public class MainController implements ChatListener {
     }
 
     /**
-     * Handle Sen Image or Video
+     * Handle Send Image or Video
      * 
      * @author Pearce Nathaniel N.
      */
     @FXML
     void handleSendImage() {
+        if (currentRoom.isEmpty()) {
+            return;
+        }
 
+        FileChooser chooser = new FileChooser();
+
+        chooser.setTitle("Select Image");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "Image Files",
+                "*.png",
+                "*.jpg",
+                "*.jpeg",
+                "*.gif"));
+
+        File selectedFile = chooser.showOpenDialog(messageContainer.getScene().getWindow());
+
+        if (selectedFile == null) {
+            return;
+        }
+
+        try {
+            FileTransferClient transferClient = new FileTransferClient("localhost");
+            transferClient.uploadImage(selectedFile);
+
+            chatClient.sendImage(selectedFile.getName());
+            addImageBubble(selectedFile.getName(), "Saya", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
     void handleSendVideo() {
+        if (currentRoom.isEmpty()) {
+            return;
+        }
 
+        FileChooser chooser = new FileChooser();
+
+        chooser.setTitle("Select Video");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter(
+                "Video Files",
+                "*.mp4",
+                "*.mov",
+                "*.avi",
+                "*.mkv"));
+
+        File selectedFile = chooser.showOpenDialog(messageContainer.getScene().getWindow());
+
+        if (selectedFile == null) {
+            return;
+        }
+
+        try {
+            FileTransferClient transferClient = new FileTransferClient(SERVER_IP);
+            transferClient.uploadVideo(selectedFile);
+
+            chatClient.sendVideo(selectedFile.getName());
+            addVideoBubble(selectedFile.getName(), "Saya", true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -294,10 +360,115 @@ public class MainController implements ChatListener {
      */
 
     private void addImageBubble(String fileName, String senderName, boolean isMe) {
-        addMessageBubble("[IMAGE] " + fileName, senderName, isMe);
-    };
+        // addMessageBubble("[IMAGE] " + fileName, senderName, isMe);
+        File localFile = new File("client_cache/image/" + fileName);
+
+        new Thread(() -> {
+            boolean success = true;
+            try {
+                success = FileTransferClient.downloadFile(SERVER_IP, "image", fileName, localFile);
+            } catch (Exception e) {
+                System.err.println("Gagal mengunduh gambar: " + e.getMessage());
+                success = false;
+            }
+
+            final boolean downloadSuccess = success;
+
+            Platform.runLater(() -> {
+                VBox bubble = new VBox();
+                bubble.setMaxWidth(400);
+
+                Label senderLabel = new Label(senderName);
+                senderLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 10;");
+                bubble.getChildren().add(senderLabel);
+
+                if (downloadSuccess && localFile.exists()) {
+                    Image image = new Image(localFile.toURI().toString());
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitWidth(250);
+                    imageView.setPreserveRatio(true);
+                    imageView.setStyle("-fx-background-radius: 10;");
+                    bubble.getChildren().add(imageView);
+                } else {
+                    Label errorLabel = new Label("[Gagal mengunduh gambar]");
+                    errorLabel.setStyle("-fx-text-fill: #ed4245;");
+                    bubble.getChildren().add(errorLabel);
+                }
+
+                styleAndAppendBubble(bubble, isMe);
+            });
+        }).start();
+    }
 
     private void addVideoBubble(String fileName, String senderName, boolean isMe) {
-        addMessageBubble("[VIDEO] " + fileName, senderName, isMe);
+        // addMessageBubble("[VIDEO] " + fileName, senderName, isMe);
+        File localFile = new File("client_cache/video/" + fileName);
+
+        new Thread(() -> {
+            boolean success = true;
+            try {
+                success = FileTransferClient.downloadFile(SERVER_IP, "video", fileName, localFile);
+            } catch (Exception e) {
+                System.err.println("Gagal mengunduh video: " + e.getMessage());
+                success = false;
+            }
+
+            final boolean downloadSuccess = success;
+
+            Platform.runLater(() -> {
+                VBox bubble = new VBox();
+                bubble.setMaxWidth(400);
+
+                Label senderLabel = new Label(senderName);
+                senderLabel.setStyle("-fx-text-fill: #949ba4; -fx-font-size: 10;");
+                bubble.getChildren().add(senderLabel);
+
+                if (downloadSuccess && localFile.exists()) {
+                    Media media = new Media(localFile.toURI().toString());
+                    MediaPlayer mediaPlayer = new MediaPlayer(media);
+                    MediaView mediaView = new MediaView(mediaPlayer);
+                    mediaView.setFitWidth(250);
+                    mediaView.setPreserveRatio(true);
+
+                    Button playBtn = new Button("▶ Play");
+                    playBtn.setStyle(
+                            "-fx-background-color: #23a55a; -fx-text-fill: white; -fx-font-size: 10; -fx-cursor: hand;");
+                    playBtn.setOnAction(e -> {
+                        if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                            mediaPlayer.pause();
+                            playBtn.setText("▶ Play");
+                        } else {
+                            mediaPlayer.play();
+                            playBtn.setText("⏸ Pause");
+                        }
+                    });
+
+                    HBox controls = new HBox(playBtn);
+                    controls.setAlignment(Pos.CENTER);
+                    controls.setStyle("-fx-padding: 5 0 0 0;");
+
+                    bubble.getChildren().addAll(mediaView, controls);
+                } else {
+                    Label errorLabel = new Label("[Gagal mengunduh video]");
+                    errorLabel.setStyle("-fx-text-fill: #ed4245;");
+                    bubble.getChildren().add(errorLabel);
+                }
+
+                styleAndAppendBubble(bubble, isMe);
+            });
+        }).start();
+    }
+
+    // DRY Helper for Bubble Styling
+    private void styleAndAppendBubble(VBox bubble, boolean isMe) {
+        HBox wrapper = new HBox(bubble);
+        if (isMe) {
+            bubble.setStyle("-fx-background-color: #5865f2; -fx-background-radius: 10 0 10 10; -fx-padding: 10;");
+            wrapper.setAlignment(Pos.CENTER_RIGHT);
+        } else {
+            bubble.setStyle("-fx-background-color: #2b2d31; -fx-background-radius: 0 10 10 10; -fx-padding: 10;");
+            wrapper.setAlignment(Pos.CENTER_LEFT);
+        }
+        messageContainer.getChildren().add(wrapper);
     }
 }
