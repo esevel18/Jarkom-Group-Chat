@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
+import javafx.util.Duration;
 
 import client.ChatClient;
 import client.ChatHistoryLogger;
@@ -47,12 +48,13 @@ public class MainController implements ChatListener {
     private String userName;
     private String currentRoom = "";
     // IP komputer for LAN test
-    private final String SERVER_IP = "localhost";
+    private String serverIp = "localhost";
 
     // Set client saat login dilakuakan
-    public void setClient(ChatClient client, String userName) {
+    public void setClient(ChatClient client, String userName, String serverIp) {
         this.chatClient = client;
         this.userName = userName;
+        this.serverIp = serverIp;
         this.myUsernameLabel.setText(userName);
 
         // Meminta daftar ruang saat pertama kali masuk
@@ -139,7 +141,7 @@ public class MainController implements ChatListener {
         }
 
         try {
-            FileTransferClient transferClient = new FileTransferClient(SERVER_IP);
+            FileTransferClient transferClient = new FileTransferClient(serverIp);
             transferClient.uploadVideo(selectedFile);
 
             chatClient.sendVideo(selectedFile.getName());
@@ -366,7 +368,7 @@ public class MainController implements ChatListener {
         new Thread(() -> {
             boolean success = true;
             try {
-                success = FileTransferClient.downloadFile(SERVER_IP, "image", fileName, localFile);
+                success = FileTransferClient.downloadFile(serverIp, "image", fileName, localFile);
             } catch (Exception e) {
                 System.err.println("Gagal mengunduh gambar: " + e.getMessage());
                 success = false;
@@ -407,7 +409,7 @@ public class MainController implements ChatListener {
         new Thread(() -> {
             boolean success = true;
             try {
-                success = FileTransferClient.downloadFile(SERVER_IP, "video", fileName, localFile);
+                success = FileTransferClient.downloadFile(serverIp, "video", fileName, localFile);
             } catch (Exception e) {
                 System.err.println("Gagal mengunduh video: " + e.getMessage());
                 success = false;
@@ -433,8 +435,15 @@ public class MainController implements ChatListener {
                     Button playBtn = new Button("▶ Play");
                     playBtn.setStyle(
                             "-fx-background-color: #23a55a; -fx-text-fill: white; -fx-font-size: 10; -fx-cursor: hand;");
+
+                    mediaPlayer.setOnEndOfMedia(() -> {
+                        mediaPlayer.seek(javafx.util.Duration.ZERO);
+                        mediaPlayer.pause();
+                        playBtn.setText("▶ Play");
+                    });
                     playBtn.setOnAction(e -> {
-                        if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+                        MediaPlayer.Status status = mediaPlayer.getStatus();
+                        if (status == MediaPlayer.Status.PLAYING) {
                             mediaPlayer.pause();
                             playBtn.setText("▶ Play");
                         } else {

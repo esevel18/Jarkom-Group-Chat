@@ -15,11 +15,11 @@ public class Main extends Application {
             primaryStage.setTitle("WhutsAppBro");
             primaryStage.setScene(new Scene(root, 400, 400));
 
-         // tutup background process saat jendela aplikasi ditutup
+            // tutup background process saat jendela aplikasi ditutup
             primaryStage.setOnCloseRequest(event -> {
-                System.exit(0); 
+                System.exit(0);
             });
-            
+
             primaryStage.show();
 
         } catch (Exception e) {

@@ -16,5 +16,6 @@
       <TextField fx:id="userNameInput" maxWidth="250.0" promptText="Masukkan Username Anda" style="-fx-background-color: #1e1f22; -fx-text-fill: white; -fx-padding: 10;" />
       <Button fx:id="loginButton" mnemonicParsing="false" onAction="#handleLogin" prefWidth="250.0" style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10;" text="Masuk" />
       <Label fx:id="errorLabel" style="-fx-text-fill: #ed4245;" text="" />
+      <TextField fx:id="serverIpInput" maxWidth="250.0" promptText="Masukkan IP Server (e.g. 192.168.1.5)" style="-fx-background-color: #1e1f22; -fx-text-fill: white; -fx-padding: 10;" />
    </children>
 </VBox>

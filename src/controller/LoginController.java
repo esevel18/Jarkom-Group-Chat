@@ -15,40 +15,50 @@ import java.io.IOException;
 import client.ChatClient;
 
 public class LoginController {
+
+	// Connect via LAN's IPv4
+	@FXML
+	private TextField serverIpInput;
 	@FXML
 	private TextField userNameInput;
 	@FXML
 	private Label errorLabel;
-	
+
 	@FXML
-    private Button loginButton;
-	
+	private Button loginButton;
+
 	@FXML
 	void handleLogin(ActionEvent e) {
 		String userName = userNameInput.getText().trim();
-		if(userName.isEmpty()) {
+		String serverIp = serverIpInput.getText().trim();
+
+		if (userName.isEmpty()) {
 			errorLabel.setText("Username tidak boleh kosong");
 			return;
 		}
-		
-		try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/main-view.fxml"));
-            Parent root = loader.load();
 
-            MainController mainController = loader.getController();
-            
-            // connect ke server
-            ChatClient client = new ChatClient("localhost", 1234, mainController);
-            client.login(userName);
-            
-            mainController.setClient(client, userName);
-            
-            // load main view
-            Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root, 1000, 700));
-            stage.show();
-            
-		} catch(IOException err) {
+		if (serverIp.isEmpty()) {
+			serverIp = "localhost";
+		}
+
+		try {
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("/application/main-view.fxml"));
+			Parent root = loader.load();
+
+			MainController mainController = loader.getController();
+
+			// connect ke server
+			ChatClient client = new ChatClient(serverIp, 1234, mainController);
+			client.login(userName);
+
+			mainController.setClient(client, userName, serverIp);
+
+			// load main view
+			Stage stage = (Stage) ((Node) e.getSource()).getScene().getWindow();
+			stage.setScene(new Scene(root, 1000, 700));
+			stage.show();
+
+		} catch (IOException err) {
 			errorLabel.setText("Gagal login");
 			err.printStackTrace();
 		}
