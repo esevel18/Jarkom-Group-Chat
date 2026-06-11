@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class ChatServer {
-	private static final int PORT = 1234;
+	// private static final int PORT = 1234;
 	private ServerSocket serverSocket;
 	
 	// simpan client yang terhubung ke server
@@ -45,7 +45,7 @@ public class ChatServer {
 	}
 	
 	public static void main(String[] args) {
-		try(ServerSocket serverSocket = new ServerSocket(PORT)){
+		try(ServerSocket serverSocket = new ServerSocket(NetworkConfig.CHAT_PORT)){
 			ChatServer server = new ChatServer(serverSocket);
 			server.startServer();
 		} catch(IOException e) {

@@ -79,8 +79,20 @@
 			<bottom>
 				<HBox alignment="CENTER" prefHeight="80.0" style="-fx-padding: 10 20 20 20; -fx-spacing: 10;">
 					<children>
+						<Button mnemonicParsing="false"
+							onAction="#handleSendVideo"
+							style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 15; -fx-cursor: hand;"
+							text="🎥" />
+						<Button mnemonicParsing="false"
+							onAction="#handleSendImage"
+							style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 15; -fx-cursor: hand;"
+							text="🖼" />
+
 						<TextField fx:id="messageInput" onAction="#handleSendMessage" promptText="Ketik pesan lalu tekan Enter..." style="-fx-background-color: #383a40; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 12; -fx-prompt-text-fill: #80848e;" HBox.hgrow="ALWAYS" />
-						<Button mnemonicParsing="false" onAction="#handleSendMessage" style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 15; -fx-cursor: hand;" text="Kirim" />
+						<Button mnemonicParsing="false" 
+							onAction="#handleSendMessage" 
+							style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 15; -fx-cursor: hand;" 
+							text="Kirim" />
 					</children>
 				</HBox>
 			</bottom>

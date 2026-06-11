@@ -7,4 +7,8 @@ public interface ChatListener{
     void onRoomJoined(String roomName, String[] members);
     void onKickedOrClosed(String reason);
     void onMemberListUpdated(String[] members);
+
+    // For Image or Video
+    void onImageReceived(String sender, String filename);
+    void onVideoReceived(String sender, String filename);
 }
