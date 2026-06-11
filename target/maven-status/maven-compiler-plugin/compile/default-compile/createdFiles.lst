@@ -2,6 +2,7 @@ client\FileTransferClient.class
 server\FileTransferServer.class
 server\NetworkConfig.class
 client\ChatClient.class
+application\AppLauncher.class
 controller\MainController.class
 application\Main.class
 controller\LoginController.class
