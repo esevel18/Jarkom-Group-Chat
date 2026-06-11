@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 
 import client.ChatClient;
+import client.ChatHistoryLogger;
 
 public class MainController implements ChatListener {
 
@@ -60,6 +61,7 @@ public class MainController implements ChatListener {
         String msg = messageInput.getText().trim();
         if (!msg.isEmpty() && !currentRoom.isEmpty()) {
             chatClient.sendMessage(msg);
+            ChatHistoryLogger.logMessage(userName, currentRoom, msg);
 
             addMessageBubble(msg, "Saya", true);
             messageInput.clear();
