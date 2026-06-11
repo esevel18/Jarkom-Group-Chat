@@ -87,6 +87,11 @@
 							onAction="#handleSendImage"
 							style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 10 15; -fx-cursor: hand;"
 							text="🖼" />
+						
+						<Button fx:id="sendFileBtn" 
+							onAction="#handleSendFile" 
+							style="-fx-background-color: #5865f2; -fx-text-fill: white; -fx-cursor: hand; -fx-background-radius: 5; -fx-padding: 8 12;" 
+							text="📄" />
 
 						<TextField fx:id="messageInput" onAction="#handleSendMessage" promptText="Ketik pesan lalu tekan Enter..." style="-fx-background-color: #383a40; -fx-text-fill: white; -fx-background-radius: 10; -fx-padding: 12; -fx-prompt-text-fill: #80848e;" HBox.hgrow="ALWAYS" />
 						<Button mnemonicParsing="false" 

@@ -140,7 +140,10 @@ public class ClientHandler implements Runnable {
 				if (currRoom != null)
 					currRoom.broadcastVideo("video#" + this.userName + "#" + text, this);
 			}
-
+			case "file" -> {
+				if (currRoom != null)
+					currRoom.broadcastFile("file#" + this.userName + "#" + text, this);
+			}
 		}
 	}
 

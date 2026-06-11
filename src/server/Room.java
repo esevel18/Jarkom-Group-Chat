@@ -50,8 +50,15 @@ public class Room {
 			if (!clientHandler.equals(sender))
 				clientHandler.sendMessage(message);
 		}
-	} 
-	
+	}
+
+	public void broadcastFile(String message, ClientHandler sender) {
+		for (ClientHandler clientHandler : clientHandlers) {
+			if (!clientHandler.equals(sender))
+				clientHandler.sendMessage(message);
+		}
+	}
+
 	// getter
 	public String getRoomName() {
 		return this.roomName;

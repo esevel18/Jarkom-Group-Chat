@@ -87,6 +87,11 @@ public class ChatClient {
 				String videoFile = parts[2];
 				listener.onVideoReceived(senderVideo, videoFile);
 				break;
+			case "file":
+				String senderFile = parts[1];
+				String genericFile = parts[2];
+				listener.onFileReceived(senderFile, genericFile);
+				break;
 
 		}
 	}
@@ -141,4 +146,7 @@ public class ChatClient {
 		return userName;
 	}
 
+	public void sendFile(String filename) {
+		out.println("file#" + filename);
+	}
 }
